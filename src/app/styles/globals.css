@@ -1,8 +1,37 @@
-@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Pirata+One&display=swap');
+@import "tailwindcss";
+
+/* Tailwind v4 CSS-first configuration */
+@theme {
+  --color-brand-light: #F2E6EE;
+  
+  /* Violet Scale (Accent) */
+  --color-violet-100: #F2E6EE;
+  --color-violet-200: #E6D4F5;
+  --color-violet-300: #D3BFF5;
+  --color-violet-400: #B8A1F8;
+  --color-violet-500: #977DFF; /* Main Brand */
+  --color-violet-600: #7A5CE6;
+  --color-violet-700: #5F3BC7;
+  --color-violet-800: #4627A1;
+  --color-violet-900: #2E1578;
+
+  /* Navy Scale (Background) */
+  --color-navy-100: #EDEFF5;
+  --color-navy-600: #3E4E80;
+  --color-navy-700: #263363;
+  --color-navy-800: #121940;
+  --color-navy-900: #080D2E;
+}
 
 :root {
-  --foreground-rgb: 151, 157, 172;
-  --background-rgb: 0, 18, 51;
+  /* Updated to match the new palette (Navy Background, Soft Violet Text) */
+  --foreground-rgb: 211, 191, 245; /* Matches violet-300 */
+  --background-rgb: 8, 13, 46;     /* Matches navy-900 */
+  
+  /* Added for easy maintenance in custom CSS below */
+  --accent-hex: #977DFF;
+  --accent-rgb: 151, 125, 255;
 }
 
 @layer base {
@@ -10,7 +39,6 @@
     box-sizing: border-box;
   }
   
-  /* Only reset margins/padding on specific elements that cause layout issues */
   html, body {
     margin: 0;
     padding: 0;
@@ -30,6 +58,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
+    font-family: 'Nunito Sans', sans-serif;
   }
   
   #__next {
@@ -38,11 +67,11 @@
     overflow-x: hidden;
   }
   
-  /* Reset only problematic default margins and set typography */
   h1, h2, h3, h4, h5, h6 {
     margin: 0;
-    font-weight: 700;
-    color: #ffffff;
+    font-weight: 400;
+    font-family: 'Pirata One', cursive;
+    color: var(--color-brand-light); /* Changed from pure white to your brand light */
   }
   
   p {
@@ -71,16 +100,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 18, 51, 0.1);
+  background: rgba(var(--background-rgb), 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0466c8;
+  background: var(--accent-hex);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0353a4;
+  background: var(--color-violet-600);
 }
 
 /* Animation Classes */
@@ -99,13 +128,13 @@
   .cursor-dot {
     width: 8px;
     height: 8px;
-    background-color: #0466c8;
+    background-color: var(--accent-hex);
   }
   
   .cursor-outline {
     width: 40px;
     height: 40px;
-    border: 2px solid rgba(4, 102, 200, 0.5);
+    border: 2px solid rgba(var(--accent-rgb), 0.5);
   }
   
   .cursor-dot,

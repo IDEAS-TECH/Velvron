@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import HeroSection from '../HeroSection/HeroSection';
 import Navbar from '../Navbar/Navbar';
@@ -8,8 +8,17 @@ import AboutSection from '../AboutSection/AboutSection';
 import ServicesSection from '../ServicesSection/ServicesSection';
 import ContactSection from '../ContactSection/ContactSection';
 import Footer from '../Footer/Footer';
+import BootSequence from '../BootSequence/BootSequence';
+import SystemHUD from '../SystemHUD/SystemHUD';
 
-// Dynamically import ProjectsSection with SSR disabled
+// CodeRain — replaces MatrixRain. Still ssr:false, still dynamic.
+// The component itself is position:fixed so it needs no wrapper div.
+const CodeRain = dynamic(() => import('../MatrixRain/MatrixRain'), {
+  ssr: false,
+  loading: () => null,
+});
+
+// ProjectsSection — ssr:false (uses browser APIs)
 const ProjectsSection = dynamic(
   () => import('../ProjectsSection/ProjectsSection'),
   {
@@ -18,63 +27,108 @@ const ProjectsSection = dynamic(
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-900 to-slate-800">
         <div className="animate-pulse text-slate-500">Loading projects...</div>
       </div>
-    )
+    ),
   }
 );
 
-// Dynamically import MatrixRain with SSR disabled
-const MatrixRain = dynamic(() => import('../MatrixRain/MatrixRain'), {
-  ssr: false,
-  loading: () => null
-});
-
-// Loading fallback component
-const LoadingFallback = () => (
-  <div 
-    className="fixed inset-0 bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center"
-    style={{ zIndex: 9999 }}
-  >
-    <div className="text-center">
-      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-      <p className="text-slate-400 text-sm">Loading...</p>
-    </div>
-  </div>
-);
-
 const HomeClient = () => {
+  const [booted, setBooted] = useState(false);
+
+  const handleBootComplete = useCallback(() => {
+    setBooted(true);
+  }, []);
+
+  // Scan observer for .scan-section elements
+  useEffect(() => {
+    if (!booted) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('scan-triggered');
+            // Only trigger once
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+
+    const sections = document.querySelectorAll('.scan-section');
+    sections.forEach((s) => observer.observe(s));
+
+    return () => observer.disconnect();
+  }, [booted]);
+
+  // Custom cursor — desktop only
+  useEffect(() => {
+    if (!booted) return;
+    if (window.matchMedia('(pointer: fine)').matches) {
+      const dot  = document.createElement('div');
+      const ring = document.createElement('div');
+      dot.className  = 'cursor-dot';
+      ring.className = 'cursor-ring';
+      document.body.appendChild(dot);
+      document.body.appendChild(ring);
+
+      let ringX = 0, ringY = 0;
+      let dotX  = 0, dotY  = 0;
+
+      const move = (e) => {
+        dotX = e.clientX; dotY = e.clientY;
+        dot.style.left  = dotX + 'px';
+        dot.style.top   = dotY + 'px';
+      };
+      document.addEventListener('mousemove', move);
+
+      let raf;
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const loop = () => {
+        ringX = lerp(ringX, dotX, 0.12);
+        ringY = lerp(ringY, dotY, 0.12);
+        ring.style.left = ringX + 'px';
+        ring.style.top  = ringY + 'px';
+        raf = requestAnimationFrame(loop);
+      };
+      raf = requestAnimationFrame(loop);
+
+      return () => {
+        document.removeEventListener('mousemove', move);
+        cancelAnimationFrame(raf);
+        dot.remove();
+        ring.remove();
+      };
+    }
+  }, [booted]);
+
   return (
-    <div className="w-full min-h-screen overflow-x-hidden">
-      {/* Navigation */}
-      <Navbar />
-      
-      {/* Hero Section with Matrix Background */}
-      <div className="relative w-full min-h-screen">
-        {/* Matrix Rain Background - Behind hero content */}
-        <div className="absolute inset-0 z-0">
-          <MatrixRain opacity={0.15} />
-        </div>
-        
-        {/* Hero Content - On top of matrix rain */}
-        <div className="relative z-10 w-full h-full">
+    <>
+      {/* ── Boot sequence — shown until booted ── */}
+      {!booted && <BootSequence onComplete={handleBootComplete} />}
+
+      {/* ── Code rain — fixed, behind everything, always running ── */}
+      <CodeRain />
+
+      {/* ── System HUD — fixed, bottom-right corner ── */}
+      {booted && <SystemHUD />}
+
+      {/* ── Main site content ── */}
+      {booted && (
+        <div
+          className="w-full min-h-screen overflow-x-hidden"
+          style={{ position: 'relative', zIndex: 2 }}
+        >
+          <Navbar />
           <HeroSection />
+          <AboutSection />
+          <ServicesSection />
+          <ProjectsSection />
+          <ContactSection />
+          <Footer />
         </div>
-      </div>
-      
-      {/* About Section */}
-      <AboutSection />
-      
-      {/* Services Section */}
-      <ServicesSection />
-      
-      {/* Projects Section */}
-      <ProjectsSection />
-      
-      {/* Contact Section */}
-      <ContactSection />
-      
-      {/* Footer */}
-      <Footer />
-    </div>
+      )}
+    </>
   );
 };
 

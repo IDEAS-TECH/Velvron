@@ -1,12 +1,10 @@
-import { Inter } from 'next/font/google';
 import './styles/globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
+import { ScrollTriggerProvider } from './components/ScrollAnimations/ScrollTriggerProvider';
 
 const siteUrl = 'https://velvronlabs.vercel.app';
 const siteTitle = 'Velvron Labs - Engineering the Future';
 const siteDescription = 'Building tomorrow\'s technology today with cutting-edge solutions in AI, cloud, and automation.';
-const siteImage = '/assets/Logo.jpg';
+const siteImage = '/assets/Logo.png';
 
 export const metadata = {
   title: siteTitle,
@@ -67,8 +65,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head />
-      <body className={inter.className}>
-        {children}
+      <body className="antialiased">
+        <ScrollTriggerProvider>
+          {children}
+        </ScrollTriggerProvider>
       </body>
     </html>
   );

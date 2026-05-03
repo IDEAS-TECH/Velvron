@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Code, Cpu, Database, Server, Shield, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './AboutSection.module.css';
@@ -13,6 +13,133 @@ const techStack = [
   { name: 'Cybersecurity', icon: <Shield size={24} />, color: '#9c66ff' }, // Top - purple
   { name: 'DevOps', icon: <Code size={24} />, color: '#ff9f40' }, // Bottom - orange
 ];
+
+// Stats data matching the marquee content
+const statsData = [
+  { number: '100+', label: 'Projects Delivered', gradient: 'from-violet-600 to-purple-600', icon: '🚀' },
+  { number: '50+', label: 'Happy Clients', gradient: 'from-blue-600 to-cyan-600', icon: '⭐' },
+  { number: '5+', label: 'Years Experience', gradient: 'from-emerald-600 to-teal-600', icon: '⚡' },
+  { number: '99%', label: 'Client Satisfaction', gradient: 'from-rose-600 to-pink-600', icon: '❤️' },
+  { number: '20+', label: 'Technologies', gradient: 'from-amber-600 to-orange-600', icon: '💻' },
+  { number: '3×', label: 'Avg. ROI', gradient: 'from-indigo-600 to-violet-600', icon: '📈' },
+];
+
+// Animated Stats Grid Component
+const AnimatedStatsGrid = () => {
+  const [activeIndices, setActiveIndices] = useState([0, 1, 2]);
+  const [isInView, setIsInView] = useState(false);
+  const containerRef = useRef(null);
+
+  // Rotate through stats every 4 seconds when in view
+  useEffect(() => {
+    if (!isInView) return;
+
+    const interval = setInterval(() => {
+      setActiveIndices(prev => {
+        const next = prev.map(i => (i + 3) % statsData.length);
+        return next;
+      });
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isInView]);
+
+  // Intersection Observer to detect when in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.3 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <motion.div 
+      ref={containerRef}
+      className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+    >
+      <AnimatePresence mode="popLayout">
+        {activeIndices.map((statIndex, displayIndex) => (
+          <motion.div
+            key={`${statIndex}-${displayIndex}`}
+            layout
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -20 }}
+            transition={{ duration: 0.5, type: 'spring', stiffness: 300 }}
+            whileHover={{ 
+              scale: 1.08, 
+              y: -8,
+              transition: { type: 'spring', stiffness: 400 }
+            }}
+            className={`relative overflow-hidden rounded-2xl p-5 cursor-pointer bg-gradient-to-br ${statsData[statIndex].gradient} border border-white/20 shadow-lg`}
+            style={{
+              boxShadow: '0 10px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)'
+            }}
+          >
+            {/* Animated Background Glow */}
+            <motion.div
+              className="absolute inset-0 bg-white/20"
+              initial={{ x: '-100%' }}
+              whileHover={{ x: '100%' }}
+              transition={{ duration: 0.6 }}
+            />
+            
+            {/* Floating Particles */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-white/40 rounded-full"
+                  initial={{ y: '100%', x: `${20 + i * 30}%`, opacity: 0 }}
+                  animate={{ 
+                    y: '-20%', 
+                    opacity: [0, 1, 0]
+                  }}
+                  transition={{ 
+                    duration: 2 + i * 0.5,
+                    repeat: Infinity,
+                    delay: i * 0.4
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="relative z-10 text-center">
+              <motion.span 
+                className="text-2xl mb-2 block"
+                animate={{ y: [0, -3, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {statsData[statIndex].icon}
+              </motion.span>
+              <motion.span 
+                className="block text-3xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg"
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, delay: 0.1 }}
+              >
+                {statsData[statIndex].number}
+              </motion.span>
+              <span className="text-white/90 text-xs md:text-sm font-medium uppercase tracking-wider">
+                {statsData[statIndex].label}
+              </span>
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
 
 // Helper function to get active face based on rotation
 const getActiveFace = (rot) => {
@@ -540,20 +667,8 @@ const AboutSection = () => {
             </span>
           </div>
           
-          <div className={styles.statsGrid}>
-            <div className={styles.statItem}>
-              <span className={styles.statNumber}>50+</span>
-              <span className={styles.statLabel}>Projects</span>
-            </div>
-            <div className={styles.statItem}>
-              <span className={styles.statNumber}>15+</span>
-              <span className={styles.statLabel}>Experts</span>
-            </div>
-            <div className={styles.statItem}>
-              <span className={styles.statNumber}>100%</span>
-              <span className={styles.statLabel}>Passion</span>
-            </div>
-          </div>
+          {/* Animated Stats Grid - Matches Marquee Content */}
+          <AnimatedStatsGrid />
         </motion.div>
       </div>
     </section>

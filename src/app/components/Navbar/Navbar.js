@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { 
-  Menu, 
-  X, 
-  Home, 
-  User, 
-  Briefcase, 
-  Mail, 
-  Code, 
+import {
+  Menu,
+  X,
+  Home,
+  User,
+  Briefcase,
+  Mail,
+  Code,
   Zap,
   Github,
   Linkedin,
@@ -80,21 +80,86 @@ const Navbar = () => {
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-12 w-full h-full flex items-center justify-between">
         {/* Logo */}
-        <motion.a 
-          href="#home" 
-          className="flex items-center gap-2 cursor-pointer transition-transform duration-200 hover:scale-105"
+        <motion.a
+          href="#home"
+          className="flex items-center gap-2 cursor-pointer select-none"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          onClick={(e) => { e.preventDefault(); handleNavClick('#home'); }}
         >
-          <Image
-            src="/assets/Logo.jpg"
-            alt="Velvron Labs Logo"
-            width={40}
-            height={40}
-            className="w-10 h-10 rounded-lg object-cover"
-          />
-          <span className="text-xl font-bold text-white leading-none">Velvron Labs</span>
+          {/* Logo image with pulse-blink animation */}
+          <motion.div
+            className="relative flex items-center justify-center"
+            whileHover={{ scale: 1.12 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+          >
+            {/* Outer glow ring — blinks */}
+            <motion.div
+              className="absolute inset-0 rounded-xl"
+              style={{
+                background: 'radial-gradient(circle, rgba(151,125,255,0.6) 0%, transparent 70%)',
+                filter: 'blur(6px)',
+              }}
+              animate={{
+                opacity: [0.3, 1, 0.3],
+                scale: [0.9, 1.15, 0.9],
+              }}
+              transition={{
+                duration: 2.2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+            {/* Second ring — offset timing for depth */}
+            <motion.div
+              className="absolute inset-0 rounded-xl border border-violet-500/40"
+              animate={{
+                opacity: [0, 0.8, 0],
+                scale: [1, 1.35, 1],
+              }}
+              transition={{
+                duration: 2.2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 0.4,
+              }}
+            />
+            <Image
+              src="/assets/Logo.png"
+              alt="Velvron Labs Logo"
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-xl object-contain relative z-10"
+              priority
+            />
+          </motion.div>
+
+          {/* Brand name — letters animate on mount */}
+          <motion.span
+            className="text-xl font-bold leading-none"
+            style={{ fontFamily: "'Nunito Sans', sans-serif" }}
+          >
+            {'Velvron Labs'.split('').map((char, i) => (
+              <motion.span
+                key={i}
+                className={char === ' ' ? 'inline-block w-2' : 'inline-block'}
+                style={{
+                  background: i < 7
+                    ? 'linear-gradient(135deg, #977DFF, #38bdf8)'
+                    : 'white',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+                initial={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 * i + 0.2, duration: 0.35, ease: 'easeOut' }}
+              >
+                {char}
+              </motion.span>
+            ))}
+          </motion.span>
         </motion.a>
 
         {/* Desktop Navigation - Hidden below 917px, Flex above 917px */}
@@ -107,26 +172,43 @@ const Navbar = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
               >
-                <a 
-                  href={link.href}
-                  className={`flex items-center gap-2 text-sm font-medium transition-all duration-200 py-2 relative group ${
-                    link.name === 'Contact' 
-                      ? 'bg-gradient-to-br from-blue-500 to-violet-500 text-white !px-6 !py-3 rounded-lg hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(59,130,246,0.3)]' 
-                      : 'text-slate-400 hover:text-white hover:-translate-y-[1px]'
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavClick(link.href);
-                  }}
-                >
-                  {link.name !== 'Contact' && (
-                    <span className="w-4 h-4 text-slate-500 transition-colors duration-200 group-hover:text-blue-500">
+                {link.name === 'Contact' ? (
+                  <motion.button
+                    onClick={() => handleNavClick(link.href)}
+                    className="relative flex items-center gap-2 text-sm font-semibold text-white px-5 py-2.5 rounded-lg overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, #977DFF 0%, #7A5CE6 50%, #38bdf8 100%)',
+                      backgroundSize: '200% 200%',
+                      boxShadow: '0 0 0 1px rgba(151,125,255,0.3), 0 4px 15px rgba(151,125,255,0.25)',
+                    }}
+                    whileHover={{ scale: 1.05, y: -1 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  >
+                    {/* Shimmer sweep on hover */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+                      whileHover={{ translateX: '200%' }}
+                      transition={{ duration: 0.55, ease: 'easeInOut' }}
+                    />
+                    <Mail size={15} className="relative z-10 flex-shrink-0" />
+                    <span className="relative z-10">Contact Us</span>
+                  </motion.button>
+                ) : (
+                  <a
+                    href={link.href}
+                    className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-all duration-200 py-2 relative group hover:-translate-y-px"
+                    onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+                  >
+                    <span className="w-4 h-4 text-slate-500 transition-colors duration-200 group-hover:text-[#977DFF] flex-shrink-0">
                       {getNavIcon(link.name)}
                     </span>
-                  )}
-                  <span>{link.name === 'Contact' ? 'Contact Us' : link.name}</span>
-                  {link.name === 'Contact' && <Mail size={16} />}
-                </a>
+                    <span className="relative">
+                      {link.name}
+                      <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-[#977DFF] to-[#38bdf8] group-hover:w-full transition-all duration-300" />
+                    </span>
+                  </a>
+                )}
               </motion.li>
             ))}
           </ul>
@@ -167,11 +249,11 @@ const Navbar = () => {
                       transition={{ delay: index * 0.1 }}
                       className={`flex items-center gap-3 font-medium py-3 transition-colors duration-200 ${
                         link.name === 'Contact'
-                          ? 'bg-gradient-to-br from-blue-500 to-violet-500 text-white px-6 rounded-lg hover:shadow-[0_10px_20px_rgba(59,130,246,0.3)] hover:-translate-y-0.5'
+                          ? 'bg-gradient-to-r from-[#977DFF] to-[#7A5CE6] text-white px-6 rounded-lg hover:shadow-[0_10px_20px_rgba(151,125,255,0.3)] hover:-translate-y-0.5'
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
-                      <span className={`w-5 h-5 ${link.name !== 'Contact' ? 'text-blue-500' : ''}`}>
+                      <span className={`w-5 h-5 ${link.name !== 'Contact' ? 'text-[#977DFF]' : ''}`}>
                         {getNavIcon(link.name)}
                       </span>
                       <span>{link.name === 'Contact' ? 'Contact Us' : link.name}</span>
@@ -190,7 +272,7 @@ const Navbar = () => {
                           href={social.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-slate-500 p-2 rounded-lg transition-all duration-200 hover:text-blue-500 hover:bg-blue-500/10 hover:-translate-y-[1px]"
+                          className="text-slate-500 p-2 rounded-lg transition-all duration-200 hover:text-[#977DFF] hover:bg-[#977DFF]/10 hover:-translate-y-[1px]"
                           whileHover={{ y: -2 }}
                           whileTap={{ scale: 0.95 }}
                           aria-label={social.name}

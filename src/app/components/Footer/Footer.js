@@ -14,7 +14,23 @@ import {
   FileText
 } from 'lucide-react';
 import Link from 'next/link';
-import { siteConfig } from '@/app/config/site';
+const siteConfig = {
+  contact: {
+    email: 'frimpongbrichmond@gmail.com',
+    phone: '+233 (0) 54 869 7052',
+    location: '8th Floor, One Airport Square, Airport City, Accra, Ghana',
+    mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.970104116976!2d-0.1765809241460331!3d5.605333133499402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9b7754117b43%3A0xc312450849266b61!2sOne%20Airport%20Square!5e0!3m2!1sen!2sgh!4v1700000000000!5m2!1sen!2sgh'
+  },
+  social: {
+    github: 'https://github.com/Velvron-Labs',
+    twitter: null,
+    linkedin: null
+  },
+  company: {
+    name: 'Velvron Labs',
+    description: 'Engineering the future, one line of code at a time. We build digital experiences that empower businesses in Ghana and beyond.'
+  }
+};
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -78,24 +94,30 @@ const Footer = () => {
                   No Twitter available yet
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
                 </div>
-                <button 
-                  className="text-slate-400 hover:text-blue-400 transition-colors cursor-not-allowed"
+                <motion.button
+                  className="text-slate-400 hover:text-[#977DFF] transition-colors cursor-not-allowed"
                   disabled
+                  whileHover={{ scale: 1.05, color: '#977DFF' }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
                   <Twitter size={20} />
-                </button>
+                </motion.button>
               </div>
               <div className="relative group">
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   No LinkedIn available yet
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
                 </div>
-                <button 
-                  className="text-slate-400 hover:text-blue-400 transition-colors cursor-not-allowed"
+                <motion.button
+                  className="text-slate-400 hover:text-[#977DFF] transition-colors cursor-not-allowed"
                   disabled
+                  whileHover={{ scale: 1.05, color: '#977DFF' }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
                   <Linkedin size={20} />
-                </button>
+                </motion.button>
               </div>
             </div>
           </motion.div>
@@ -112,26 +134,32 @@ const Footer = () => {
                   No careers available yet
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
                 </div>
-                <button 
-                  className="w-full flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors cursor-not-allowed text-left text-sm"
+                <motion.button
+                  className="w-full flex items-center gap-2 text-slate-400 hover:text-[#977DFF] transition-colors cursor-not-allowed text-left text-sm"
                   disabled
+                  whileHover={{ scale: 1.05, color: '#977DFF' }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-700" />
                   <span>Careers</span>
-                </button>
+                </motion.button>
               </li>
               <li className="relative group">
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   No blogs available yet
                   <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 rotate-45"></div>
                 </div>
-                <button 
-                  className="w-full flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors cursor-not-allowed text-left text-sm"
+                <motion.button
+                  className="w-full flex items-center gap-2 text-slate-400 hover:text-[#977DFF] transition-colors cursor-not-allowed text-left text-sm"
                   disabled
+                  whileHover={{ scale: 1.05, color: '#977DFF' }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-700" />
                   <span>Our Blog</span>
-                </button>
+                </motion.button>
               </li>
               <FooterLink href="#contact">Contact</FooterLink>
             </ul>

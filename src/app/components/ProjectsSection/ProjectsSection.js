@@ -132,30 +132,40 @@ const DiagonalProjectCard = ({ project }) => (
               Live Demo
             </a>
           ) : (
-            <motion.button disabled className="flex items-center gap-2 px-6 py-3 bg-neutral-800 text-neutral-500 rounded-xl font-bold text-sm border border-neutral-700 cursor-not-allowed"
+            <motion.button 
+              onClick={() => alert('Coming soon!')}
+              className="flex items-center gap-2 px-6 py-3 bg-neutral-800 text-neutral-300 rounded-xl font-bold text-sm border border-neutral-700 transition-all touch-manipulation"
               whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(122,77,255,0.5)', y: -2 }}
               whileTap={{ scale: 0.96 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              role="button"
+              aria-label="Coming soon project">
               <ExternalLink className="w-4 h-4" />
               Coming Soon
             </motion.button>
           )}
 
           {project.sourceAvailable ? (
-            <a
+            <motion.a
               href={project.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-3 bg-neutral-800 text-white rounded-xl font-bold text-sm border border-neutral-700 hover:bg-neutral-700 transition-all"
-            >
-              <Github className="w-4 h-4" />
-              Source
-            </a>
-          ) : (
-            <motion.button disabled className="flex items-center gap-2 px-6 py-3 bg-neutral-800 text-neutral-500 rounded-xl font-bold text-sm border border-neutral-700 cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-3 bg-neutral-800 text-white rounded-xl font-bold text-sm border border-neutral-700 transition-all"
               whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(122,77,255,0.5)', y: -2 }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
+              <Github className="w-4 h-4" />
+              Source
+            </motion.a>
+          ) : (
+            <motion.button 
+              onClick={() => alert('Source code is private')}
+              className="flex items-center gap-2 px-6 py-3 bg-neutral-800 text-neutral-300 rounded-xl font-bold text-sm border border-neutral-700 transition-all touch-manipulation"
+              whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(122,77,255,0.5)', y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              role="button"
+              aria-label="Private source code">
               <Code className="w-4 h-4" />
               Private
             </motion.button>

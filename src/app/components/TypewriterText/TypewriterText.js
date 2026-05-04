@@ -8,7 +8,7 @@ const phrases = [
   "We help startups and enterprises build scalable, secure, and user-centric applications with cutting-edge technology.",
   "Transforming ideas into powerful digital experiences that drive growth and innovation.",
   "Building the future with AI, cloud infrastructure, and modern web technologies.",
-  "From concept to deployment — we deliver excellence at every step of your journey.",
+  "From concept to deployment - we deliver excellence at every step of your journey.",
 ];
 
 export default function TypewriterText({ className = '' }) {
@@ -18,20 +18,30 @@ export default function TypewriterText({ className = '' }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
   const [isGlitching, setIsGlitching] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile on mount
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
 
   const currentPhrase = phrases[currentPhraseIndex];
 
-  // Typing speed configuration
-  const TYPING_SPEED = 22; // ms per character (was 35)
-  const DELETING_SPEED = 15; // ms per character when deleting (was 20)
+  // Typing speed configuration - much slower on mobile for better readability
+  const TYPING_SPEED = isMobile ? 80 : 22; // ms per character (much slower on mobile)
+  const DELETING_SPEED = isMobile ? 50 : 15; // ms per character when deleting (slower on mobile)
   const PAUSE_AT_END = 1800; // pause after typing complete (was 2500)
   const PAUSE_BEFORE_DELETE = 800; // pause before starting to delete (was 1000)
-  const GLITCH_CHANCE = 0.03; // 3% chance of glitch per character
+  const GLITCH_CHANCE = 0; // completely disabled glitch for clean display
 
-  // Glitch characters
-  const glitchChars = '!<>-_\\/[]{}—=+*^?#@$%&';
-
-  const getGlitchChar = () => glitchChars[Math.floor(Math.random() * glitchChars.length)];
+  // No glitch characters - clean typewriter effect
+  const getGlitchChar = () => null; // disabled
 
   const typewriterEffect = useCallback(() => {
     if (isTyping && !isDeleting) {
@@ -39,17 +49,8 @@ export default function TypewriterText({ className = '' }) {
       if (displayText.length < currentPhrase.length) {
         const nextChar = currentPhrase[displayText.length];
         
-        // Random glitch effect
-        if (Math.random() < GLITCH_CHANCE && displayText.length > 5) {
-          setIsGlitching(true);
-          setDisplayText(prev => prev + getGlitchChar());
-          setTimeout(() => {
-            setDisplayText(prev => prev.slice(0, -1) + nextChar);
-            setIsGlitching(false);
-          }, 50);
-        } else {
-          setDisplayText(prev => prev + nextChar);
-        }
+        // Direct character addition - no glitch effect
+        setDisplayText(prev => prev + nextChar);
       } else {
         // Finished typing - pause then start deleting
         setIsTyping(false);

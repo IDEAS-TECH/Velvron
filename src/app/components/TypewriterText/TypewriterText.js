@@ -22,10 +22,10 @@ export default function TypewriterText({ className = '' }) {
   const currentPhrase = phrases[currentPhraseIndex];
 
   // Typing speed configuration
-  const TYPING_SPEED = 35; // ms per character
-  const DELETING_SPEED = 20; // ms per character when deleting
-  const PAUSE_AT_END = 2500; // pause after typing complete
-  const PAUSE_BEFORE_DELETE = 1000; // pause before starting to delete
+  const TYPING_SPEED = 22; // ms per character (was 35)
+  const DELETING_SPEED = 15; // ms per character when deleting (was 20)
+  const PAUSE_AT_END = 1800; // pause after typing complete (was 2500)
+  const PAUSE_BEFORE_DELETE = 800; // pause before starting to delete (was 1000)
   const GLITCH_CHANCE = 0.03; // 3% chance of glitch per character
 
   // Glitch characters

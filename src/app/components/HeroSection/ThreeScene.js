@@ -14,16 +14,19 @@ const ThreeScene = () => {
   const targetRotation = useRef({ x: 0, y: 0 });
   const currentRotation = useRef({ x: 0, y: 0 });
 
-  // Performance settings based on device capabilities
+  // Enhanced performance settings for faster loading
   const performanceSettings = useMemo(() => {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isLowPerformance = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+    const isSlowConnection = navigator.connection && (navigator.connection.effectiveType === 'slow-2g' || navigator.connection.effectiveType === '2g');
     
     return {
-      particleCount: isMobile ? 800 : isLowPerformance ? 1200 : 2000,
-      enablePostProcessing: !isMobile && !isLowPerformance,
-      animationSpeed: isMobile ? 0.5 : 1,
-      renderScale: isMobile ? 0.75 : 1
+      particleCount: isMobile || isSlowConnection ? 400 : isLowPerformance ? 800 : 1500,
+      enablePostProcessing: !isMobile && !isLowPerformance && !isSlowConnection,
+      animationSpeed: isMobile || isSlowConnection ? 0.3 : isLowPerformance ? 0.6 : 0.8,
+      renderScale: isMobile || isSlowConnection ? 0.5 : isLowPerformance ? 0.75 : 0.9,
+      enableShadows: !isMobile && !isLowPerformance,
+      pixelRatio: Math.min(window.devicePixelRatio, isMobile ? 1 : 1.5)
     };
   }, []);
 

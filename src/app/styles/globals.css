@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Telma Font from Fontshare CDN with font-display for performance */
+@font-face { 
+  font-family: 'Telma'; 
+  src: url('https://api.fontshare.com/v2/css?f[]=telma@700,900&display=swap'); 
+  font-display: swap;
+}
+
 /* System font stack to avoid network dependencies */
 @layer base {
   .font-sans {
@@ -33,11 +49,19 @@
 :root {
   /* Updated to match the new palette (Navy Background, Soft Violet Text) */
   --foreground-rgb: 211, 191, 245; /* Matches violet-300 */
-  --background-rgb: 8, 13, 46;     /* Matches navy-900 */
+  --background-rgb: 5, 5, 5;     /* Matches #050505 dark background */
   
   /* Added for easy maintenance in custom CSS below */
   --accent-hex: #977DFF;
   --accent-rgb: 151, 125, 255;
+  
+  /* New Design System Variables - Aligned with Existing Colors */
+  --color-base: rgb(5, 5, 5); /* Matches #050505 dark background */
+  --color-surface: rgba(255,255,255,0.03);
+  --color-glass-border: rgba(255,255,255,0.08);
+  --glow-violet: rgba(151, 125, 255, 0.5); /* Matches existing --accent-rgb */
+  --glow-cyan: rgba(34,211,238,0.5);
+  --font-display: 'Telma', sans-serif;
 }
 
 @layer base {
@@ -64,7 +88,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: var(--font-display);
   }
   
   #__next {
@@ -73,11 +97,23 @@
     overflow-x: hidden;
   }
   
-  h1, h2, h3, h4, h5, h6 {
+  /* Universal font family for ALL text elements */
+  *, *::before, *::after {
+    font-family: var(--font-display);
+  }
+  
+  h1, h2 {
     margin: 0;
     font-weight: 400;
-    font-family: 'Pirata One', cursive;
-    color: var(--color-brand-light); /* Changed from pure white to your brand light */
+    font-family: var(--font-display);
+    color: var(--color-brand-light);
+  }
+  
+  h3, h4, h5, h6 {
+    margin: 0;
+    font-weight: 400;
+    font-family: var(--font-display);
+    color: var(--color-brand-light);
   }
   
   p {
@@ -356,7 +392,7 @@
     pointer-events: none;
     z-index: 99998;
     transform: translate(-50%, -50%);
-    transition: transform 0.18s ease, width 0.25s ease, height 0.25s ease, border-color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   a:hover ~ .cursor-dot,
@@ -456,3 +492,155 @@ body::after {
    9998 → BootSequence
    9999 → Any modals / alerts (not currently used)
    ====================================================== */
+
+/* ======================================================
+   DESIGN SYSTEM UTILITY CLASSES
+   ====================================================== */
+
+.glass-card { 
+  background: rgba(255,255,255,0.03); 
+  backdrop-filter: blur(20px); 
+  -webkit-backdrop-filter: blur(20px); 
+  border: 1px solid rgba(255,255,255,0.08); 
+  border-radius: 16px; 
+}
+
+.glow-violet { 
+  box-shadow: 0 0 40px rgba(151,125,255,0.3), 0 0 80px rgba(151,125,255,0.1); 
+}
+
+.glow-cyan { 
+  box-shadow: 0 0 40px rgba(34,211,238,0.3), 0 0 80px rgba(34,211,238,0.1); 
+}
+
+.shimmer { 
+  position: relative; 
+  overflow: hidden; 
+}
+
+.shimmer::after { 
+  content:''; 
+  position:absolute; 
+  inset:0; 
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%); 
+  background-size: 200% 100%; 
+  animation: shimmerMove 2s ease infinite; 
+}
+
+@keyframes shimmerMove { 
+  0%{background-position:-100% 0} 
+  100%{background-position:200% 0} 
+}
+
+@keyframes gradientShift { 
+  0%,100%{background-position:0% 50%} 
+  50%{background-position:100% 50%} 
+}
+
+/* Scroll Reveal Classes */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-scale.in-view {
+  opacity: 1;
+  transform: scale(1);
+}
+[data-delay="1"] { transition-delay: 0.1s; }
+[data-delay="2"] { transition-delay: 0.2s; }
+[data-delay="3"] { transition-delay: 0.3s; }
+[data-delay="4"] { transition-delay: 0.4s; }
+[data-delay="5"] { transition-delay: 0.5s; }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Film grain noise layer */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* Ambient orb drift animations */
+@keyframes orbDrift1 {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  33%  { transform: translate(60px, 40px) scale(1.05); }
+  66%  { transform: translate(20px, 80px) scale(0.97); }
+  100% { transform: translate(80px, 30px) scale(1.03); }
+}
+@keyframes orbDrift2 {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  33%  { transform: translate(-50px, 60px) scale(1.08); }
+  66%  { transform: translate(-80px, 20px) scale(0.95); }
+  100% { transform: translate(-30px, 80px) scale(1.04); }
+}
+@keyframes orbDrift3 {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  33%  { transform: translate(40px, -50px) scale(1.06); }
+  66%  { transform: translate(-40px, -30px) scale(0.98); }
+  100% { transform: translate(60px, -60px) scale(1.02); }
+}
+@keyframes orbDrift4 {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  50%  { transform: translate(-40px, 50px) scale(1.1); }
+  100% { transform: translate(30px, 30px) scale(0.94); }
+}
+
+/* Mobile safety for orbs */
+@media (max-width: 768px) {
+  /* Reduce orb intensity on mobile for performance */
+  [data-orb] {
+    filter: blur(30px) !important;
+    opacity: 0.7;
+  }
+}
+
+/* Reduced motion respect */
+@media (prefers-reduced-motion: reduce) {
+  [data-orb] {
+    animation: none !important;
+  }
+}

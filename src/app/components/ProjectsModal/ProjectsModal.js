@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { X, ExternalLink, Zap, Globe, Code2, Sparkles } from 'lucide-react';
 
 // Projects data (matching ProjectsSection)
@@ -137,7 +138,7 @@ const LightningCard = ({ project, index, onClose }) => {
       <motion.div
         onClick={handleClick}
         className={`relative z-10 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ${
-          isLive ? 'bg-slate-900/90 border-slate-700/50' : 'bg-slate-900/60 border-slate-800/30'
+          isLive ? 'bg-black/90 border-white/10' : 'bg-black/60 border-white/5'
         } border backdrop-blur-sm`}
         whileHover={{ scale: 1.02, y: -4 }}
         whileTap={{ scale: 0.98 }}
@@ -281,7 +282,7 @@ export default function ProjectsModal({ isOpen, onClose }) {
 
   if (!mounted) return null;
 
-  return (
+  return typeof window !== 'undefined' && createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -291,7 +292,7 @@ export default function ProjectsModal({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-[9990]"
+            className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[9990]"
             onClick={onClose}
           />
 
@@ -301,11 +302,11 @@ export default function ProjectsModal({ isOpen, onClose }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed inset-4 sm:inset-8 md:inset-16 lg:inset-20 z-[9991] overflow-hidden"
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9991] max-w-6xl max-h-[85vh] w-[90vw] overflow-y-auto"
           >
-            <div className="relative w-full h-full bg-slate-900/95 rounded-3xl border border-slate-700/50 overflow-hidden shadow-2xl">
+            <div className="relative w-full h-full bg-black/95 rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
               {/* Header */}
-              <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50">
+              <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-black/95 backdrop-blur-md border-b border-white/10">
                 <div className="flex items-center gap-3">
                   <motion.div
                     animate={{ rotate: [0, 10, -10, 0] }}
@@ -331,8 +332,9 @@ export default function ProjectsModal({ isOpen, onClose }) {
                 <motion.button
                   onClick={onClose}
                   className="p-2 rounded-xl bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 transition-colors group"
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(122,77,255,0.5)', y: -2, rotate: 90 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
                   <X className="w-5 h-5 text-slate-400 group-hover:text-white" />
                 </motion.button>
@@ -361,12 +363,15 @@ export default function ProjectsModal({ isOpen, onClose }) {
                   <Code2 className="w-8 h-8 text-slate-500 mx-auto mb-3" />
                   <p className="text-slate-400 text-sm">
                     More projects coming soon. Have an idea?{' '}
-                    <button 
+                    <motion.button 
                       onClick={() => { onClose(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}
                       className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors"
+                      whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(122,77,255,0.5)', y: -2 }}
+                      whileTap={{ scale: 0.96 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                     >
                       Let&apos;s build it together
-                    </button>
+                    </motion.button>
                   </p>
                 </motion.div>
               </div>
@@ -399,6 +404,7 @@ export default function ProjectsModal({ isOpen, onClose }) {
           `}</style>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

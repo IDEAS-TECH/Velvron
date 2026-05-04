@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 import { Marquee } from '../Marquee/Marquee';
 import TypewriterText from '../TypewriterText/TypewriterText';
 
-// Dynamically import Spline scene with SSR disabled
+// Optimized Spline scene with performance settings
 const SplineSceneBasic = dynamic(
   () => import('../ui/SplineSceneBasic').then(mod => ({ default: mod.SplineSceneBasic })),
   {
@@ -22,16 +22,82 @@ const SplineSceneBasic = dynamic(
   }
 );
 
+// Dynamically import Three.js cube scene with SSR disabled
+const DynamicThreeScene = dynamic(
+  () => import('./ThreeScene'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className={styles.splineLoader}>
+        <div className={styles.splineSpinner} />
+      </div>
+    ),
+  }
+);
+
+// Reusable ripple effect function
+const addRipple = (e) => {
+  const button = e.currentTarget;
+  const rect = button.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x = e.clientX - rect.left - size / 2;
+  const y = e.clientY - rect.top - size / 2;
+  
+  const ripple = document.createElement('span');
+  ripple.style.cssText = `
+    position: absolute;
+    border-radius: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    left: ${x}px;
+    top: ${y}px;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: rippleEffect 0.5s ease-out forwards;
+  `;
+  
+  // Add ripple animation if not already in styles
+  if (!document.querySelector('#ripple-styles')) {
+    const style = document.createElement('style');
+    style.id = 'ripple-styles';
+    style.textContent = `
+      @keyframes rippleEffect {
+        to {
+          width: 200px;
+          height: 200px;
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  button.style.position = 'relative';
+  button.style.overflow = 'hidden';
+  button.appendChild(ripple);
+  
+  setTimeout(() => {
+    ripple.remove();
+  }, 500);
+};
+
 const HeroSection = () => {
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.01 });
 
   const containerVariants = useMemo(() => ({
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.08 },
+      y: 0,
+      transition: { 
+        duration: 0.8, 
+        delay: 0.3, 
+        ease: [0.16, 1, 0.3, 1],
+        staggerChildren: 0.08 
+      },
     },
   }), []);
 
@@ -56,6 +122,29 @@ const HeroSection = () => {
   useEffect(() => {
     controls.start('visible');
   }, [isInView, controls]);
+
+  // Parallax scroll effect
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    
+    let rafId;
+    const handleScroll = () => {
+      rafId = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const slow = document.querySelector('[data-parallax="slow"]');
+        const mid  = document.querySelector('[data-parallax="mid"]');
+        const fast = document.querySelector('[data-parallax="fast"]');
+        if (slow) slow.style.transform = `translateY(${y * 0.12}px)`;
+        if (mid)  mid.style.transform  = `translateY(${y * 0.25}px)`;
+        if (fast) fast.style.transform = `translateY(${y * 0.4}px)`;
+      });
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   const handleGetStarted = useCallback(() => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
@@ -94,6 +183,7 @@ const HeroSection = () => {
                 }
               }}
               style={{ cursor: 'pointer' }}
+              data-parallax="fast"
             >
               <motion.span
                 className="flex items-center gap-2"
@@ -139,11 +229,22 @@ const HeroSection = () => {
               </motion.span>
             </motion.div>
 
-            <motion.h1 variants={itemVariants} className={styles.title}>
-              <span className={styles.companyName}>Velvron Labs</span>
+            <motion.h1 
+              variants={itemVariants} 
+              className={styles.title}
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #a78bfa 40%, #22d3ee 70%, #ffffff 100%)',
+                backgroundSize: '300% 300%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                animation: 'gradientShift 6s ease infinite'
+              }}
+            >
+              <span className={styles.companyName}>VELVRON LABS</span>
               <br />
-              Engineering the Future of{' '}
-              <span className={styles.highlight}>Technology</span>
+              ENGINEERING THE FUTURE OF{' '}
+              <span className={styles.highlight}>TECHNOLOGY</span>
             </motion.h1>
 
             <motion.div variants={itemVariants} className={styles.subtitle}>
@@ -151,33 +252,62 @@ const HeroSection = () => {
             </motion.div>
 
             <motion.div variants={itemVariants} className={styles.ctaContainer}>
-              <button
+              <motion.button
+                data-magnetic
                 className={styles.primaryButton}
-                onClick={handleGetStarted}
+                onClick={(e) => { addRipple(e); handleGetStarted(); }}
                 type="button"
                 aria-label="Get started with our services"
+                whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(122,77,255,0.5)', y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               >
                 Get Started
                 <span className={styles.buttonIcon} aria-hidden="true">→</span>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                data-magnetic
                 className={styles.secondaryButton}
-                onClick={handleLearnMore}
+                onClick={(e) => { addRipple(e); handleLearnMore(); }}
                 type="button"
                 aria-label="Learn more about our services"
+                whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(122,77,255,0.5)', y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               >
                 Learn More
-              </button>
+              </motion.button>
             </motion.div>
 
           </div>
 
-          {/* Right Column — Spline 3D Scene */}
+          {/* Right Column — Dual 3D Scene */}
           <motion.div
             className={styles.terminalWrapper}
             variants={splineVariants}
           >
-            <SplineSceneBasic />
+            {/* Radial glow behind 3D scene */}
+            <div
+              data-parallax="mid"
+              style={{
+                position: 'absolute',
+                borderRadius: '50%',
+                width: '400px',
+                height: '400px',
+                background: 'radial-gradient(circle, rgba(122,77,255,0.15) 0%, transparent 70%)',
+                filter: 'blur(60px)',
+                pointerEvents: 'none',
+                zIndex: 0
+              }}
+            />
+            {/* Three.js Cube Scene - Background Layer */}
+            <div className="absolute inset-0 z-10">
+              <DynamicThreeScene />
+            </div>
+            {/* Spline Scene - Foreground Layer */}
+            <div className="absolute inset-0 z-20">
+              <SplineSceneBasic />
+            </div>
           </motion.div>
         </motion.div>
 

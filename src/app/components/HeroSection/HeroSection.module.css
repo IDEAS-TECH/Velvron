@@ -42,14 +42,14 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
+  background: rgba(151, 125, 255, 0.1);
+  color: #977dff;
   padding: 0.6rem 1.1rem;
   border-radius: 2rem;
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 1.75rem;
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(151, 125, 255, 0.2);
   backdrop-filter: blur(8px);
   white-space: nowrap;
 }
@@ -63,26 +63,25 @@
 
 .title {
   font-size: clamp(2.25rem, 5.5vw, 3.75rem);
-  font-weight: 800;
-  line-height: 1.2;          /* slightly looser to prevent text jump */
+  font-weight: 900;
+  line-height: 1.2;
   margin: 0 0 1.75rem 0;
-  color: #f8fafc;
-  letter-spacing: -0.02em;
-  min-height: 2.4em;         /* prevents layout shift during type/backspace */
+  letter-spacing: -0.03em;
+  font-style: normal;
 }
 
 .companyName {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+  background: linear-gradient(135deg, #977dff, #7a5ce6, #06b6d4);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 900;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.05em;
   display: inline-block;
 }
 
 .highlight {
-  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  background: linear-gradient(90deg, #977dff, #7a5ce6);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -124,15 +123,14 @@
   min-width: 148px;
   justify-content: center;
   transition: box-shadow 0.3s ease;
-  font-family: 'Nunito Sans', sans-serif;
-}
+  }
 
 /* ── Primary ── */
 .primaryButton {
-  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #977DFF 100%);
+  background: linear-gradient(135deg, #977dff 0%, #7a5ce6 50%, #6366f1 100%);
   background-size: 200% 200%;
   color: white;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 20px rgba(151, 125, 255, 0.35);
   animation: gradShift 4s ease infinite;
 }
 
@@ -143,7 +141,7 @@
 }
 
 .primaryButton:hover {
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.55), 0 0 0 1px rgba(255,255,255,0.1);
+  box-shadow: 0 8px 32px rgba(151, 125, 255, 0.55), 0 0 0 1px rgba(255,255,255,0.1);
 }
 
 /* Ripple */
@@ -301,11 +299,28 @@
     width: 100%;
     max-width: 260px;
   }
+
+  /* Enable both 3D cube AND Spline on mobile */
+  .terminalWrapper {
+    display: block !important;
+    height: 300px !important;
+    min-height: 300px !important;
+  }
+
+  .splineLoader {
+    display: flex !important;
+  }
+
+  .splineSpinner {
+    display: block !important;
+  }
 }
 
 @media (max-width: 570px) {
   .terminalWrapper {
-    display: none;
+    height: 220px !important;
+    min-height: 220px !important;
+    display: block !important;
   }
 
   .marqueeSection {

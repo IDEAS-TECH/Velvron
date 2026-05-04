@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Phone, Send, Loader2 } from 'lucide-react';
+import { useReveal } from '../../hooks/useReveal';
 const siteConfig = {
   contact: {
     email: 'frimpongbrichmond@gmail.com',
@@ -22,6 +23,7 @@ const siteConfig = {
 };
 
 const ContactSection = () => {
+  const revealRef = useReveal();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
@@ -54,9 +56,9 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative w-full py-20 lg:py-32 bg-slate-950 overflow-hidden text-slate-50">
+    <section ref={revealRef} id="contact" className="relative w-full py-20 lg:py-32 bg-[#050505] overflow-hidden text-white reveal-scale">
       {/* Background Gradients/Glows */}
-      <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[100px] pointer-events-none" />
 
       <motion.div 
@@ -71,11 +73,11 @@ const ContactSection = () => {
           {/* Left Content Column */}
           <div className="flex flex-col gap-8">
             <motion.div variants={itemVariants}>
-              <span className="inline-block text-blue-400 font-bold text-sm tracking-[0.2em] mb-4 uppercase">
+              <span className="inline-block text-purple-400 font-bold text-sm tracking-[0.2em] mb-4 uppercase">
                 &#47;&#47; Get In Touch
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-slate-50 to-slate-400">
-                Let&apos;s Build Something <span className="text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-violet-500">Amazing</span>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400">
+                Let&apos;s Build Something <span className="text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-pink-500">Amazing</span>
               </h2>
               <p className="text-lg text-slate-400 leading-relaxed max-w-lg">
                 Have a project in mind or want to discuss potential opportunities? 
@@ -108,7 +110,7 @@ const ContactSection = () => {
             variants={itemVariants}
             className="w-full"
           >
-            <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-6 md:p-8 lg:p-10 shadow-2xl relative overflow-hidden group">
+            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8 lg:p-10 shadow-2xl relative overflow-hidden group">
               {/* Subtle sheen effect on form hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               
@@ -136,14 +138,15 @@ const ContactSection = () => {
                     placeholder="Tell us about your project..." 
                     rows="5" 
                     required 
-                    className="w-full bg-slate-800/50 border border-slate-700/50 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-y min-h-[120px]"
+                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 hover:border-white/20 transition-all duration-300 resize-y min-h-[120px]"
                   ></textarea>
                 </div>
 
                 <motion.button
+                  data-magnetic
                   type="submit"
                   disabled={isSubmitting}
-                  className="group relative flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="group relative flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                   whileHover={{ scale: 1.03, y: -2, boxShadow: '0 12px 32px rgba(151,125,255,0.4)' }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 18 }}
@@ -173,15 +176,15 @@ const ContactSection = () => {
 // Sub-component for Contact Info Items to keep code clean
 const ContactInfoItem = ({ icon, title, details }) => (
   <motion.div 
-    className="flex items-start gap-4 p-4 rounded-xl bg-slate-900/50 border border-slate-800/50 hover:border-blue-500/30 hover:bg-slate-800/50 transition-all duration-300 group"
+    className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-purple-500/30 hover:bg-white/[0.06] transition-all duration-300 group"
     whileHover={{ x: 5 }}
   >
-    <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-900/20">
+    <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-violet-800 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-900/20">
       {icon}
     </div>
     <div>
-      <h4 className="text-lg font-semibold text-slate-200 mb-1">{title}</h4>
-      <p className="text-slate-400 leading-snug">{details}</p>
+      <h4 className="text-lg font-semibold text-white mb-1">{title}</h4>
+      <p className="text-neutral-400 leading-snug">{details}</p>
     </div>
   </motion.div>
 );
@@ -194,7 +197,7 @@ const InputGroup = ({ name, placeholder, type }) => (
       name={name} 
       placeholder={placeholder} 
       required 
-      className="w-full bg-slate-800/50 border border-slate-700/50 rounded-lg px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 hover:border-white/20 transition-all duration-300"
     />
   </div>
 );

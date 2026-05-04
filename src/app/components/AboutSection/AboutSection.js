@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Code, Cpu, Database, Server, Shield, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './AboutSection.module.css';
+import { useReveal } from '../../hooks/useReveal';
 
 const techStack = [
   { name: 'AI/ML', icon: <Cpu size={24} />, color: '#ff6347' }, // Front - red
@@ -29,6 +30,7 @@ const AnimatedStatsGrid = () => {
   const [activeIndices, setActiveIndices] = useState([0, 1, 2]);
   const [isInView, setIsInView] = useState(false);
   const containerRef = useRef(null);
+  const revealRef = useReveal();
 
   // Rotate through stats every 4 seconds when in view
   useEffect(() => {
@@ -202,6 +204,7 @@ const AboutSection = () => {
   const isShowcasingRef = useRef(isShowcasing);
   const omnidirectionalSpinRef = useRef(omnidirectionalSpin);
   const targetRotationRef = useRef({ x: 0, y: 0, z: 0 });
+  const revealRef = useReveal();
   const availableFacesRef = useRef(['front', 'back', 'right', 'left', 'top', 'bottom']);
   const showcaseTimerRef = useRef(null);
 
@@ -584,8 +587,8 @@ const AboutSection = () => {
   return (
     <section 
       id="about" 
-      className={styles.aboutSection} 
-      ref={sectionRef}
+      className={`${styles.aboutSection} reveal-up`} 
+      ref={revealRef}
     >
       <div className={styles.container}>
         {/* Left side - 3D Cube */}

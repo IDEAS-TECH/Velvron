@@ -96,7 +96,7 @@ export default function MatrixRain({ className = '' }) {
     const isMobile = window.innerWidth < 768;
     const FONT_SIZE = 10;
     const FONT = `${FONT_SIZE}px 'Courier New', Courier, monospace`;
-    const TARGET_FPS = 20;
+    const TARGET_FPS = 60; // was 20
     const FRAME_TIME = 1000 / TARGET_FPS;
 
     // Build columns based on viewport width
@@ -117,7 +117,7 @@ export default function MatrixRain({ className = '' }) {
         cols.push({
           x: Math.max(4, Math.min(baseX, w - 240)),
           y: Math.random() * -h,                      // start above viewport
-          speed: 0.25 + Math.random() * 0.45,         // px per frame
+          speed: 0.875 + Math.random() * 1.575,         // px per frame (was 0.25 + Math.random() * 0.45)
           opacity: 0.04 + Math.random() * 0.11,       // 0.04 – 0.15
           lineIndex: Math.floor(Math.random() * CODE_LINES.length),
           lineSpacing: FONT_SIZE * 1.8,
@@ -181,7 +181,7 @@ export default function MatrixRain({ className = '' }) {
           col.y = canvas.height + Math.random() * 200;
           col.lineIndex = Math.floor(Math.random() * CODE_LINES.length);
           col.opacity = 0.04 + Math.random() * 0.11;
-          col.speed = 0.25 + Math.random() * 0.45;
+          col.speed = 0.875 + Math.random() * 1.575; // was 0.25 + Math.random() * 0.45
         }
       }
     };

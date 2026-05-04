@@ -211,7 +211,7 @@ const AboutSection = () => {
   // Check if mobile on mount
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 1024);
+      setIsMobile(window.innerWidth <= 768);
     };
     
     checkIfMobile();
@@ -521,6 +521,36 @@ const AboutSection = () => {
       }
     }, 500);
   }, []);
+
+  // Mobile cube rotation function
+  const rotateCube = useCallback((direction) => {
+    if (!isMobile) return;
+    
+    setAutoRotate(false);
+    setIsShowcasing(false);
+    
+    const current = rotation;
+    const rotationStep = 90; // Rotate 90 degrees per step
+    
+    let newY;
+    if (direction === 'left') {
+      newY = current.y - rotationStep;
+    } else if (direction === 'right') {
+      newY = current.y + rotationStep;
+    } else {
+      return;
+    }
+    
+    setRotation(prev => ({
+      ...prev,
+      y: newY
+    }));
+    
+    // Restart auto-rotate after a delay
+    setTimeout(() => {
+      setAutoRotate(true);
+    }, 5000);
+  }, [isMobile, rotation]);
 
   // Touch event handlers
   const handleTouchStart = useCallback((e) => {

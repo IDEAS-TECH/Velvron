@@ -57,6 +57,7 @@
   width: 300px;
   height: 300px;
   margin: 0 auto;
+  transform-style: preserve-3d;
 }
 
 .cubeNavButton {
@@ -122,17 +123,8 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: rotateX(20deg) rotateY(20deg);
-  cursor: grab;
-}
-
-.cube {
-  width: 300px;
-  height: 300px;
-  position: relative;
-  transform-style: preserve-3d;
   transition: transform 0.1s linear;
+  cursor: grab;
 }
 
 .cube.smooth {
@@ -409,16 +401,19 @@
     display: block;
     max-width: 250px;
     height: 250px;
+    perspective: 1000px;
   }
 
   .cube {
     width: 250px;
     height: 250px;
+    transform-style: preserve-3d;
   }
 
   .cubeFace {
     width: 250px;
     height: 250px;
+    transform-style: preserve-3d;
   }
 
   /* Update face positions for smaller cube */
@@ -439,13 +434,14 @@
   }
   
   .cubeContainer {
-    max-width: 300px;
+    max-width: 250px;
+    height: 250px;
   }
   
-  .face1 { transform: rotateY(0deg) translateZ(150px); }
-  .face2 { transform: rotateY(90deg) translateZ(150px); }
-  .face3 { transform: rotateY(180deg) translateZ(150px); }
-  .face4 { transform: rotateY(-90deg) translateZ(150px); }
-  .face5 { transform: rotateX(90deg) translateZ(150px); }
-  .face6 { transform: rotateX(-90deg) translateZ(150px); }
+  .face1 { transform: rotateY(0deg) translateZ(125px); }
+  .face2 { transform: rotateY(90deg) translateZ(125px); }
+  .face3 { transform: rotateY(180deg) translateZ(125px); }
+  .face4 { transform: rotateY(-90deg) translateZ(125px); }
+  .face5 { transform: rotateX(90deg) translateZ(125px); }
+  .face6 { transform: rotateX(-90deg) translateZ(125px); }
 }
